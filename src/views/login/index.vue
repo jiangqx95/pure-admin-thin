@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import Motion from "./utils/motion";
+import Cookies from "js-cookie";
+import { rsaEncrypt } from "@/utils/encrypt/rsaEncrypt";
 import { useRouter } from "vue-router";
 import { message } from "@/utils/message";
 import { loginRules } from "./utils/rule";
@@ -8,19 +10,51 @@ import { useNav } from "@/layout/hooks/useNav";
 import type { FormInstance } from "element-plus";
 import { useLayout } from "@/layout/hooks/useLayout";
 import { useUserStoreHook } from "@/store/modules/user";
-import { bg, avatar, illustration } from "./utils/static";
+import { bg, illustration } from "./utils/static";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
+import { getCode } from "@/api/user";
 
 import dayIcon from "@/assets/svg/day.svg?component";
 import darkIcon from "@/assets/svg/dark.svg?component";
 import Lock from "@iconify-icons/ri/lock-fill";
 import User from "@iconify-icons/ri/user-3-fill";
+import Code from "@iconify-icons/ri/shield-check-fill";
+
+const GLOB_APP_SHORT_NAME = "pure-admin-";
+const rememberMe = ref(false);
+
+// 验证码对象
+const captcha = reactive({
+  show: false, // 是否需要验证码
+  img: "", // 图片
+  uuid: ""
+});
+
+const ruleForm = reactive({
+  username: "admin",
+  password: "123456",
+  code: ""
+});
+
+// 获取cookie
+const rememberMe_ = Cookies.get(GLOB_APP_SHORT_NAME + "rememberMe");
+rememberMe.value = rememberMe_ === undefined ? false : Boolean(rememberMe_);
+if (rememberMe.value) {
+  const username = Cookies.get(GLOB_APP_SHORT_NAME + "username");
+  ruleForm.username = username === undefined ? ruleForm.username : username;
+  const password = Cookies.get(GLOB_APP_SHORT_NAME + "password");
+  ruleForm.password = password === undefined ? ruleForm.password : password;
+}
+
+// 获取验证码
+getVerificationCode();
 
 defineOptions({
   name: "Login"
 });
+
 const router = useRouter();
 const loading = ref(false);
 const ruleFormRef = ref<FormInstance>();
@@ -32,20 +66,25 @@ const { dataTheme, dataThemeChange } = useDataThemeChange();
 dataThemeChange();
 const { title } = useNav();
 
-const ruleForm = reactive({
-  username: "admin",
-  password: "admin123"
-});
-
 const onLogin = async (formEl: FormInstance | undefined) => {
   loading.value = true;
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
+      const encrypt_pass =
+        ruleForm.password !== Cookies.get("pure-admin-" + "password")
+          ? rsaEncrypt(ruleForm.password)
+          : ruleForm.password;
+
       useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
+        .loginByUsername({
+          username: ruleForm.username,
+          password: encrypt_pass,
+          code: ruleForm.code,
+          uuid: captcha.uuid
+        })
         .then(res => {
-          if (res.success) {
+          if (res) {
             // 获取后端路由
             initRouter().then(() => {
               router.push("/");
@@ -59,6 +98,17 @@ const onLogin = async (formEl: FormInstance | undefined) => {
     }
   });
 };
+
+/** 获取验证码 */
+function getVerificationCode() {
+  getCode().then(res => {
+    if (res["show"] != false) {
+      captcha.show = true;
+      captcha.img = res["img"];
+      captcha.uuid = res["uuid"];
+    }
+  });
+}
 
 /** 使用公共函数，避免`removeEventListener`失效 */
 function onkeypress({ code }: KeyboardEvent) {
@@ -135,6 +185,25 @@ onBeforeUnmount(() => {
                   placeholder="密码"
                   :prefix-icon="useRenderIcon(Lock)"
                 />
+              </el-form-item>
+            </Motion>
+
+            <Motion :delay="150" v-if="captcha.show">
+              <el-form-item prop="code">
+                <el-input
+                  v-model="ruleForm.code"
+                  placeholder="验证码"
+                  :prefix-icon="useRenderIcon(Code)"
+                >
+                  <template #suffix>
+                    <img
+                      :src="captcha.img"
+                      alt=""
+                      @click="getVerificationCode"
+                      style="cursor: pointer"
+                    />
+                  </template>
+                </el-input>
               </el-form-item>
             </Motion>
 

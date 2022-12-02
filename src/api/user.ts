@@ -28,9 +28,16 @@ export type RefreshTokenResult = {
   };
 };
 
+/** 获取验证码 */
+export const getCode = () => {
+  return http.request<Object>("get", "http://localhost:8000/auth/code");
+};
+
 /** 登录 */
 export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/login", { data });
+  return http.request<UserResult>("post", "http://localhost:8000/auth/login", {
+    data
+  });
 };
 
 /** 刷新token */
