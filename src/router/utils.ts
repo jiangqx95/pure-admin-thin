@@ -199,7 +199,7 @@ function initRouter() {
     } else {
       return new Promise(resolve => {
         getAsyncRoutes().then(({ data }) => {
-          handleAsyncRoutes(data);
+          handleAsyncRoutes(cloneDeep(data));
           storageSession.setItem(key, data);
           resolve(router);
         });
@@ -208,7 +208,7 @@ function initRouter() {
   } else {
     return new Promise(resolve => {
       getAsyncRoutes().then(({ data }) => {
-        handleAsyncRoutes(data);
+        handleAsyncRoutes(cloneDeep(data));
         resolve(router);
       });
     });
