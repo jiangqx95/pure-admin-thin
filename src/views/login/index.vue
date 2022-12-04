@@ -91,6 +91,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
               message("登录成功", { type: "success" });
             });
           }
+        })
+        .catch(() => {
+          loading.value = false;
+          getVerificationCode();
         });
     } else {
       loading.value = false;
@@ -102,10 +106,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
 /** 获取验证码 */
 function getVerificationCode() {
   getCode().then(res => {
-    if (res["show"] != false) {
+    if (!res.data.show) {
       captcha.show = true;
-      captcha.img = res["img"];
-      captcha.uuid = res["uuid"];
+      captcha.img = res.data.img;
+      captcha.uuid = res.data.uuid;
     }
   });
 }

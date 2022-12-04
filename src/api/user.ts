@@ -1,36 +1,41 @@
 import { http } from "@/utils/http";
 
 export type UserResult = {
+  code: boolean;
+  message: string;
   success: boolean;
   data: {
-    /** 用户名 */
-    username: string;
-    /** 当前登陆用户的角色 */
-    roles: Array<string>;
+    user: {
+      dataScopes: Array<string>;
+      user: {
+        avatarPath: string;
+        /** 用户名 */
+        username: string;
+        /** 昵称 */
+        nickName: string;
+        /** 当前登陆用户的角色 */
+        roles: Array<string>;
+      };
+    };
     /** `token` */
-    accessToken: string;
-    /** 用于调用刷新`accessToken`的接口时所需的`token` */
-    refreshToken: string;
-    /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
-    expires: Date;
+    token: string;
   };
 };
 
-export type RefreshTokenResult = {
+export type CodeResult = {
+  code: boolean;
+  message: string;
   success: boolean;
   data: {
-    /** `token` */
-    accessToken: string;
-    /** 用于调用刷新`accessToken`的接口时所需的`token` */
-    refreshToken: string;
-    /** `accessToken`的过期时间（格式'xxxx/xx/xx xx:xx:xx'） */
-    expires: Date;
+    show: boolean;
+    img: string;
+    uuid: string;
   };
 };
 
 /** 获取验证码 */
 export const getCode = () => {
-  return http.request<Object>("get", "http://localhost:8000/auth/code");
+  return http.request<CodeResult>("get", "http://localhost:8000/auth/code");
 };
 
 /** 登录 */
@@ -38,9 +43,4 @@ export const getLogin = (data?: object) => {
   return http.request<UserResult>("post", "http://localhost:8000/auth/login", {
     data
   });
-};
-
-/** 刷新token */
-export const refreshTokenApi = (data?: object) => {
-  return http.request<RefreshTokenResult>("post", "/refreshToken", { data });
 };

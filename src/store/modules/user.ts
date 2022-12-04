@@ -4,8 +4,8 @@ import { userType } from "./types";
 import { routerArrays } from "@/layout/types";
 import { router, resetRouter } from "@/router";
 import { storageSession } from "@pureadmin/utils";
-import { getLogin, refreshTokenApi } from "@/api/user";
-import { UserResult, RefreshTokenResult } from "@/api/user";
+import { getLogin } from "@/api/user";
+import { UserResult } from "@/api/user";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth";
 
@@ -13,10 +13,9 @@ export const useUserStore = defineStore({
   id: "pure-user",
   state: (): userType => ({
     // 用户名
-    username:
-      storageSession.getItem<DataInfo<number>>(sessionKey)?.username ?? "",
+    username: storageSession.getItem<DataInfo>(sessionKey)?.username ?? "",
     // 页面级别权限
-    roles: storageSession.getItem<DataInfo<number>>(sessionKey)?.roles ?? []
+    roles: storageSession.getItem<DataInfo>(sessionKey)?.roles ?? []
   }),
   actions: {
     /** 存储用户名 */
@@ -32,13 +31,11 @@ export const useUserStore = defineStore({
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (data) {
+            if (data.success) {
               const dataInfo = {
-                accessToken: data["token"],
-                expires: null,
-                refreshToken: "",
-                username: data["user"]["user"]["nackName"],
-                roles: data["user"]["roles"]
+                token: data.data.token,
+                username: data.data.user.user.username,
+                roles: data.data.user.user.roles
               };
               setToken(dataInfo);
               resolve(data);
@@ -57,21 +54,6 @@ export const useUserStore = defineStore({
       useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
       resetRouter();
       router.push("/login");
-    },
-    /** 刷新`token` */
-    async handRefreshToken(data) {
-      return new Promise<RefreshTokenResult>((resolve, reject) => {
-        refreshTokenApi(data)
-          .then(data => {
-            if (data) {
-              setToken(data.data);
-              resolve(data);
-            }
-          })
-          .catch(error => {
-            reject(error);
-          });
-      });
     }
   }
 });
