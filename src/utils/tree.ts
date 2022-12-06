@@ -137,7 +137,7 @@ export const appendFieldByUniqueId = (
 export const handleTree = (
   data: any[],
   id?: string,
-  parentId?: string,
+  pid?: string,
   children?: string
 ): any => {
   if (!Array.isArray(data)) {
@@ -146,7 +146,7 @@ export const handleTree = (
   }
   const config = {
     id: id || "id",
-    parentId: parentId || "parentId",
+    parentId: pid || "pid",
     childrenList: children || "children"
   };
 

@@ -9,5 +9,5 @@ type Result = {
 };
 
 export const getAsyncRoutes = () => {
-  return http.request<Result>("get", baseApi("/api/menus/build"));
+  return http.request<Result>("get", baseApi("api/menus/build"));
 };

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { handleTree } from "@/utils/tree";
 import type { ElTree } from "element-plus";
-import { getDeptList } from "@/api/system";
+import { getDeptList } from "@/api/system/system";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, watch, onMounted, getCurrentInstance } from "vue";
 
@@ -13,6 +13,7 @@ import Reset from "@iconify-icons/ri/restart-line";
 import Dept from "@iconify-icons/ri/git-branch-line";
 import OfficeBuilding from "@iconify-icons/ep/office-building";
 import Search from "@iconify-icons/ep/search";
+import type Node from "element-plus/es/components/tree/src/model/node";
 
 interface Tree {
   id: number;
@@ -20,9 +21,11 @@ interface Tree {
   highlight?: boolean;
   children?: Tree[];
 }
+
 const defaultProps = {
   children: "children",
-  label: "name"
+  label: "name",
+  hasChildren: true
 };
 
 const treeData = ref([]);
@@ -31,6 +34,15 @@ const { proxy } = getCurrentInstance();
 const treeRef = ref<InstanceType<typeof ElTree>>();
 
 const highlightMap = ref({});
+
+const loadNode = async (node: Node, resolve: (data: Tree[]) => void) => {
+  if (node.level === 0) {
+    const { data } = await getDeptList({ pid: 0 });
+    return resolve(handleTree(data.list as any));
+  }
+  const { data } = await getDeptList({ pid: node.data.id });
+  resolve(handleTree(data.list as any));
+};
 
 const filterNode = (value: string, data: Tree) => {
   if (!value) return true;
@@ -73,7 +85,7 @@ watch(searchValue, val => {
 
 onMounted(async () => {
   const { data } = await getDeptList();
-  treeData.value = handleTree(data as any);
+  treeData.value = handleTree(data.list as any);
 });
 </script>
 
@@ -147,13 +159,13 @@ onMounted(async () => {
     <el-divider />
     <el-tree
       ref="treeRef"
-      :data="treeData"
       node-key="id"
       size="small"
+      lazy
       :props="defaultProps"
-      default-expand-all
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
+      :load="loadNode"
       @node-click="nodeClick"
     >
       <template #default="{ node, data }">

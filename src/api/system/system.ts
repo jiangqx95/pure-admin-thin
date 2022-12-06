@@ -14,16 +14,16 @@ type Result = {
 };
 
 /** 获取用户管理列表 */
-export const getUserList = (data?: object) => {
-  return http.request<Result>("post", baseApi("/api/users/list"), { data });
+export const getUserList = (params?: object) => {
+  return http.request<Result>("get", baseApi("api/users"), { params });
 };
 
 /** 获取角色管理列表 */
-export const getRoleList = (data?: object) => {
-  return http.request<Result>("post", "/role", { data });
+export const getRoleList = (params?: object) => {
+  return http.request<Result>("get", baseApi("api/roles"), { params });
 };
 
 /** 获取部门管理列表 */
-export const getDeptList = (data?: object) => {
-  return http.request<Result>("post", "/dept", { data });
+export const getDeptList = (params?: object) => {
+  return http.request<Result>("get", baseApi("api/dept"), { params });
 };

@@ -5,6 +5,7 @@ specifiers:
   "@commitlint/config-conventional": 13.1.0
   "@ctrl/tinycolor": ^3.4.1
   "@iconify-icons/ep": ^1.2.7
+  "@iconify-icons/mdi": ^1.2.8
   "@iconify-icons/ri": ^1.2.3
   "@iconify/vue": ^4.0.0
   "@pureadmin/descriptions": ^1.1.0
@@ -123,6 +124,7 @@ devDependencies:
   "@commitlint/cli": 13.1.0
   "@commitlint/config-conventional": 13.1.0
   "@iconify-icons/ep": 1.2.10
+  "@iconify-icons/mdi": 1.2.34
   "@iconify-icons/ri": 1.2.4
   "@iconify/vue": 4.0.0_vue@3.2.45
   "@pureadmin/theme": 2.4.0
@@ -903,6 +905,15 @@ packages:
     resolution:
       {
         integrity: sha512-slLhiMM5snJi+Mbzj02UPkK1Ym5SK9U4l1CSbA5V6YGjzL1Pk60fGPB6b7Js3jObftONWji6bpJKFjOGYyPk/g==
+      }
+    dependencies:
+      "@iconify/types": 2.0.0
+    dev: true
+
+  /@iconify-icons/mdi/1.2.34:
+    resolution:
+      {
+        integrity: sha512-3A7ezd/9mQKM9KEqR8QIfJaBWJ/HfZ3u45oy5/yU6FlTQrfRx+f+e0hD0nwAkbOptZmz2sFsGIfwBdX4Kl+JIw==
       }
     dependencies:
       "@iconify/types": 2.0.0
