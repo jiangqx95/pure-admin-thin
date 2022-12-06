@@ -26,7 +26,7 @@ const IFrame = () => import("@/layout/frameView.vue");
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
 
 // 动态路由
-import { getAsyncRoutes } from "@/api/routes";
+import { getAsyncRoutes } from "@/api/system/routes";
 
 /** 按照路由中meta下的rank等级升序来排序路由 */
 function ascending(arr: any[]) {
@@ -77,7 +77,7 @@ function isOneOfArray(a: Array<string>, b: Array<string>) {
 /** 从sessionStorage里取出当前登陆用户的角色roles，过滤无权限的菜单 */
 function filterNoPermissionTree(data: RouteComponent[]) {
   const currentRoles =
-    storageSession.getItem<DataInfo<number>>(sessionKey)?.roles ?? [];
+    storageSession.getItem<DataInfo>(sessionKey)?.roles ?? [];
   const newTree = cloneDeep(data).filter((v: any) =>
     isOneOfArray(v.meta?.roles, currentRoles)
   );

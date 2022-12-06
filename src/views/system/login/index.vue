@@ -10,14 +10,14 @@ import { useNav } from "@/layout/hooks/useNav";
 import type { FormInstance } from "element-plus";
 import { useLayout } from "@/layout/hooks/useLayout";
 import { useUserStoreHook } from "@/store/modules/user";
-import { bg, illustration } from "./utils/static";
+import { bg, avatar, illustration } from "./utils/static";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
-import { getCode } from "@/api/user";
+import { getCode } from "@/api/system/user";
 
-import dayIcon from "@/assets/svg/day.svg?component";
-import darkIcon from "@/assets/svg/dark.svg?component";
+import dayIcon from "@/assets/svg/day.svg";
+import darkIcon from "@/assets/svg/dark.svg";
 import Lock from "@iconify-icons/ri/lock-fill";
 import User from "@iconify-icons/ri/user-3-fill";
 import Code from "@iconify-icons/ri/shield-check-fill";
@@ -91,6 +91,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
               message("登录成功", { type: "success" });
             });
           }
+        })
+        .catch(() => {
+          loading.value = false;
+          getVerificationCode();
         });
     } else {
       loading.value = false;
@@ -102,10 +106,10 @@ const onLogin = async (formEl: FormInstance | undefined) => {
 /** 获取验证码 */
 function getVerificationCode() {
   getCode().then(res => {
-    if (res["show"] != false) {
+    if (!res.data.show) {
       captcha.show = true;
-      captcha.img = res["img"];
-      captcha.uuid = res["uuid"];
+      captcha.img = res.data.img;
+      captcha.uuid = res.data.uuid;
     }
   });
 }

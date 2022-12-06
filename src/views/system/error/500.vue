@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import noExist from "@/assets/status/404.svg?component";
+import noServer from "@/assets/status/500.svg";
 
 defineOptions({
-  name: "404"
+  name: "500"
 });
 </script>
 
 <template>
   <div class="flex justify-center items-center h-[640px]">
-    <noExist />
+    <noServer />
     <div class="ml-12">
       <p
         class="font-medium text-4xl mb-4 dark:text-white"
@@ -25,7 +25,7 @@ defineOptions({
           }
         }"
       >
-        404
+        500
       </p>
       <p
         class="mb-4 text-gray-500"
@@ -42,7 +42,7 @@ defineOptions({
           }
         }"
       >
-        抱歉，你访问的页面不存在
+        抱歉，服务器出错了
       </p>
       <el-button
         type="primary"
