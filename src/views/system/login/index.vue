@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import {
+  ref,
+  reactive,
+  toRaw,
+  onMounted,
+  onBeforeUnmount,
+  computed
+} from "vue";
 import Motion from "./utils/motion";
 import Cookies from "js-cookie";
 import { rsaEncrypt } from "@/utils/encrypt/rsaEncrypt";
@@ -13,26 +21,17 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { bg, avatar, illustration } from "./utils/static";
 import { operates, thirdParty } from "./utils/enums";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
-import phone from "./components/phone.vue";
-import qrCode from "./components/qrCode.vue";
-import regist from "./components/regist.vue";
-import update from "./components/update.vue";
-import {
-  ref,
-  reactive,
-  toRaw,
-  onMounted,
-  onBeforeUnmount,
-  computed
-} from "vue";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
-import { getCode } from "@/api/system/user";
-
+import { getCode } from "@/api/system/login";
 import dayIcon from "@/assets/svg/day.svg";
 import darkIcon from "@/assets/svg/dark.svg";
 import Lock from "@iconify-icons/ri/lock-fill";
 import User from "@iconify-icons/ri/user-3-fill";
 import Code from "@iconify-icons/ri/shield-check-fill";
+import phone from "./components/phone.vue";
+import qrCode from "./components/qrCode.vue";
+import regist from "./components/regist.vue";
+import update from "./components/update.vue";
 
 const GLOB_APP_SHORT_NAME = "pure-admin-";
 const rememberMe = ref(false);
@@ -42,7 +41,7 @@ const currentPage = computed(() => {
 
 // 验证码对象
 const captcha = reactive({
-  show: false, // 是否需要验证码
+  enable: false, // 是否开启验证码
   img: "", // 图片
   uuid: ""
 });
@@ -121,8 +120,8 @@ const onLogin = async (formEl: FormInstance | undefined) => {
 /** 获取验证码 */
 function getVerificationCode() {
   getCode().then(res => {
-    if (!res.data.show) {
-      captcha.show = true;
+    if (res.data.enable) {
+      captcha.enable = true;
       captcha.img = res.data.img;
       captcha.uuid = res.data.uuid;
     }
@@ -217,7 +216,7 @@ onBeforeUnmount(() => {
               </el-form-item>
             </Motion>
 
-            <Motion :delay="150" v-if="captcha.show">
+            <Motion :delay="150" v-if="captcha.enable">
               <el-form-item
                 prop="code"
                 :rules="[

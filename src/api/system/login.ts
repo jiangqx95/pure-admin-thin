@@ -6,7 +6,7 @@ type Authority = {
 };
 
 export type UserResult = {
-  code: string;
+  code: number;
   message: string;
   success: boolean;
   data: {
@@ -40,11 +40,11 @@ export type UserResult = {
 };
 
 export type CodeResult = {
-  code: string;
+  code: number;
   message: string;
   success: boolean;
   data: {
-    show: boolean;
+    enable: boolean;
     img: string;
     uuid: string;
   };

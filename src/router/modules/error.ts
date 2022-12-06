@@ -4,7 +4,8 @@ export default {
   meta: {
     icon: "informationLine",
     title: "异常页面",
-    rank: 9
+    rank: 9,
+    showLink: false
   },
   children: [
     {
