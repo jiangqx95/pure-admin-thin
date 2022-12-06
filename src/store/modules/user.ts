@@ -4,8 +4,8 @@ import { userType } from "./types";
 import { routerArrays } from "@/layout/types";
 import { router, resetRouter } from "@/router";
 import { storageSession } from "@pureadmin/utils";
-import { getLogin } from "@/api/user";
-import { UserResult } from "@/api/user";
+import { doLogOut, getLogin } from "@/api/system/login";
+import { UserResult } from "@/api/system/login";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth";
 
@@ -15,7 +15,9 @@ export const useUserStore = defineStore({
     // 用户名
     username: storageSession.getItem<DataInfo>(sessionKey)?.username ?? "",
     // 页面级别权限
-    roles: storageSession.getItem<DataInfo>(sessionKey)?.roles ?? []
+    roles: storageSession.getItem<DataInfo>(sessionKey)?.roles ?? [],
+    // 判断登录页面显示哪个组件（0：登录（默认）、1：手机登录、2：二维码登录、3：注册、4：忘记密码）
+    currentPage: 0
   }),
   actions: {
     /** 存储用户名 */
@@ -26,12 +28,16 @@ export const useUserStore = defineStore({
     SET_ROLES(roles: Array<string>) {
       this.roles = roles;
     },
+    /** 存储登录页面显示哪个组件 */
+    SET_CURRENTPAGE(value: number) {
+      this.currentPage = value;
+    },
     /** 登入 */
     async loginByUsername(data) {
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
           .then(data => {
-            if (data.success) {
+            if (data) {
               const dataInfo = {
                 token: data.data.token,
                 username: data.data.user.user.username,
@@ -46,8 +52,11 @@ export const useUserStore = defineStore({
           });
       });
     },
-    /** 前端登出（不调用接口） */
+    /** 退出系统 */
     logOut() {
+      // 后端退出
+      doLogOut();
+      // 前端退出
       this.username = "";
       this.roles = [];
       removeToken();

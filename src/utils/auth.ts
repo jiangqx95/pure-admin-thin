@@ -7,7 +7,6 @@ export interface DataInfo {
   token: string;
   /** 用户名 */
   username?: string;
-  nickName?: string;
   /** 当前登陆用户的角色 */
   roles?: Array<string>;
 }
@@ -23,8 +22,8 @@ export function getToken(): string {
 
 /**
  * @description 设置`token`以及一些必要信息
- * 将`token`信息放在key值为authorized-token的cookie里（过期自动销毁）
- * 将`username`、`roles`信息放在key值为`user-info`的sessionStorage里（浏览器关闭自动销毁）
+ * 将`token` 放在key值为authorized-token的cookie里（过期自动销毁）
+ * 将`username`、`roles` 放在key值为`user-info`的sessionStorage里（浏览器关闭自动销毁）
  */
 export function setToken(data: DataInfo) {
   Cookies.set(TokenKey, data.token);

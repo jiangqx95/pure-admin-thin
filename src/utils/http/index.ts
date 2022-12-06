@@ -47,21 +47,28 @@ class PureHttp {
       async (config: PureHttpRequestConfig) => {
         // 开启进度条动画
         NProgress.start();
+
         // 优先判断post/get等方法是否传入回掉，否则执行初始化设置等回掉
         if (typeof config.beforeRequestCallback === "function") {
           config.beforeRequestCallback(config);
           return config;
         }
+
         if (PureHttp.initConfig.beforeRequestCallback) {
           PureHttp.initConfig.beforeRequestCallback(config);
           return config;
         }
-        /** 请求白名单，放置一些不需要token的接口（通过设置请求白名单，防止token过期后再请求造成的死循环问题） */
-        const whiteList = ["/refreshToken", "/auth/login", "/auth/code"];
+
+        /** 请求白名单，放置一些【登录前】不需要token的接口，
+         *  【登录后】不需要token的接口可加也可不加
+         *  若不加，当token过期时这些无需token的接口也将无法访问
+         */
+        const whiteList = ["/auth/login", "/auth/code", "/auth/logout"];
 
         if (!whiteList.some(v => config.url.indexOf(v) > -1)) {
           config.headers["Authorization"] = formatToken(getToken());
         }
+
         return config;
       },
       error => {
@@ -94,9 +101,8 @@ class PureHttp {
         $error.isCancelRequest = Axios.isCancel($error);
         // 关闭进度条动画
         NProgress.done();
-        // 错误提示
         // @ts-ignore
-        message(error.response.data.message, { type: "error" });
+        message($error.response.data.message, { type: "error" });
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
       }
