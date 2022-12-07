@@ -102,7 +102,7 @@ class PureHttp {
         // 关闭进度条动画
         NProgress.done();
         // @ts-ignore
-        message($error.response.data.message, { type: "error" });
+        message($error.response.data.message || "服务异常", { type: "error" });
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
       }

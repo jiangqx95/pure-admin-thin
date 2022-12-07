@@ -15,11 +15,12 @@
 
   .sub-menu-icon {
     vertical-align: middle;
-    font-size: 18px;
+    font-size: 16px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    margin-right: 5px;
+    margin-right: 8px;
+    border-bottom: 1px;
   }
 
   .set-icon {
@@ -163,7 +164,7 @@
 
     .el-menu .el-menu--inline .el-sub-menu__title,
     & .el-sub-menu .el-menu-item {
-      font-size: 12px;
+      /*font-size: 12px;*/
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
     }

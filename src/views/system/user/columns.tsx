@@ -29,18 +29,18 @@ export function useColumns() {
     },
     {
       label: "用户昵称",
-      prop: "nickname"
+      prop: "nickName"
     },
     {
       label: "性别",
-      prop: "sex",
+      prop: "gender",
       cellRenderer: ({ row, props }) => (
         <el-tag
           size={props.size}
-          type={row.sex === 1 ? "danger" : ""}
+          type={row.gender === "女" ? "danger" : ""}
           effect="plain"
         >
-          {row.sex === 1 ? "女" : "男"}
+          {row.gender}
         </el-tag>
       )
     },
@@ -51,21 +51,21 @@ export function useColumns() {
     },
     {
       label: "手机号码",
-      prop: "mobile"
+      prop: "phone"
     },
     {
       label: "状态",
-      prop: "status",
+      prop: "enabled",
       width: 130,
       cellRenderer: scope => (
         <el-switch
           size={scope.props.size === "small" ? "small" : "default"}
           loading={switchLoadMap.value[scope.index]?.loading}
-          v-model={scope.row.status}
-          active-value={1}
-          inactive-value={0}
-          active-text="已开启"
-          inactive-text="已关闭"
+          v-model={scope.row.enabled}
+          active-value={false}
+          inactive-value={true}
+          active-text="启用"
+          inactive-text="停用"
           inline-prompt
           onChange={() => onChange(scope as any)}
         />
@@ -89,7 +89,7 @@ export function useColumns() {
   function onChange({ row, index }) {
     ElMessageBox.confirm(
       `确认要<strong>${
-        row.status === 0 ? "停用" : "启用"
+        row.enabled ? "停用" : "启用"
       }</strong><strong style='color:var(--el-color-primary)'>${
         row.username
       }</strong>用户吗?`,
@@ -124,7 +124,7 @@ export function useColumns() {
         }, 300);
       })
       .catch(() => {
-        row.status === 0 ? (row.status = 1) : (row.status = 0);
+        row.enabled = !row.enabled;
       });
   }
 

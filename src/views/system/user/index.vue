@@ -22,9 +22,9 @@ defineOptions({
 });
 
 const form = reactive({
-  username: "",
-  mobile: "",
-  status: ""
+  blurry: "",
+  phone: "",
+  enabled: null
 });
 const dataList = ref([]);
 const loading = ref(true);
@@ -61,7 +61,7 @@ function handleSelectionChange(val) {
 
 async function onSearch() {
   loading.value = true;
-  const { data } = await getUserList();
+  const { data } = await getUserList(form);
   dataList.value = data.list;
   pagination.total = data.total;
   setTimeout(() => {
@@ -92,22 +92,22 @@ onMounted(() => {
       >
         <el-form-item label="用户名称：" prop="username">
           <el-input
-            v-model="form.username"
-            placeholder="请输入用户名称"
+            v-model="form.blurry"
+            placeholder="请输入用户名 / 昵称"
             clearable
           />
         </el-form-item>
         <el-form-item label="手机号码：" prop="mobile">
           <el-input
-            v-model="form.mobile"
+            v-model="form.phone"
             placeholder="请输入手机号码"
             clearable
           />
         </el-form-item>
         <el-form-item label="状态：" prop="status">
-          <el-select v-model="form.status" placeholder="请选择" clearable>
-            <el-option label="已开启" value="1" />
-            <el-option label="已关闭" value="0" />
+          <el-select v-model="form.enabled" placeholder="请选择" clearable>
+            <el-option label="启用" value="true" />
+            <el-option label="停用" value="false" />
           </el-select>
         </el-form-item>
         <el-form-item>
