@@ -30,6 +30,7 @@
   ],
   "dependencies": {
     "@ctrl/tinycolor": "^3.4.1",
+    "@element-plus/icons-vue": "^2.0.10",
     "@pureadmin/descriptions": "^1.1.0",
     "@pureadmin/table": "^1.8.3",
     "@pureadmin/utils": "^1.7.5",
@@ -62,8 +63,8 @@
     "@commitlint/cli": "13.1.0",
     "@commitlint/config-conventional": "13.1.0",
     "@iconify-icons/ep": "^1.2.7",
-    "@iconify-icons/ri": "^1.2.3",
     "@iconify-icons/mdi": "^1.2.8",
+    "@iconify-icons/ri": "^1.2.3",
     "@iconify/vue": "^4.0.0",
     "@pureadmin/theme": "^2.4.0",
     "@types/element-resize-detector": "1.1.3",

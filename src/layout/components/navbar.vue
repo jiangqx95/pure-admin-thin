@@ -5,8 +5,8 @@ import mixNav from "./sidebar/mixNav.vue";
 import { useNav } from "@/layout/hooks/useNav";
 import Breadcrumb from "./sidebar/breadCrumb.vue";
 import topCollapse from "./sidebar/topCollapse.vue";
-import LogoutCircleRLine from "@iconify-icons/ri/logout-circle-r-line";
 import Setting from "@iconify-icons/ri/settings-3-line";
+import { reactive, ref } from "vue";
 
 const {
   layout,
@@ -18,6 +18,13 @@ const {
   avatarsStyle,
   toggleSideBar
 } = useNav();
+
+const dialogFormVisible = ref(false);
+const form = reactive({
+  password: "",
+  newPassword: "",
+  repeatPassword: ""
+});
 </script>
 
 <template>
@@ -43,7 +50,7 @@ const {
       <Search />
       <!-- 通知 -->
       <Notice id="header-notice" />
-      <!-- 退出登录 -->
+      <!-- 修改密码|退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">
           <img
@@ -54,13 +61,11 @@ const {
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
-            <el-dropdown-item @click="logout">
-              <IconifyIconOffline
-                :icon="LogoutCircleRLine"
-                style="margin: 5px"
-              />
-              退出系统
-            </el-dropdown-item>
+            <el-dropdown-item @click="dialogFormVisible = true"
+              >修改密码</el-dropdown-item
+            >
+            <hr style="color: #e0ebf6" />
+            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -72,6 +77,29 @@ const {
         <IconifyIconOffline :icon="Setting" />
       </span>
     </div>
+
+    <!-- 修改密码弹窗 -->
+    <el-dialog title="修改密码" width="500" v-model="dialogFormVisible">
+      <el-form :model="form" label-width="auto">
+        <el-form-item label="旧密码" prop="password">
+          <el-input v-model="form.password" clearable />
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="form.newPassword" clearable show-password />
+        </el-form-item>
+        <el-form-item label="确认密码" prop="repeatPassword">
+          <el-input v-model="form.repeatPassword" clearable show-password />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false"
+            >确 定</el-button
+          >
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 

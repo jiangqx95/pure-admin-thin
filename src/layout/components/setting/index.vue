@@ -129,7 +129,7 @@ const multiTagsCacheChange = () => {
   useMultiTagsStoreHook().multiTagsCacheChange(multiTagsCache);
 };
 
-/** 清空缓存并返回登录页 */
+/** 重置配置并返回登录页 */
 function onReset() {
   removeToken();
   storageLocal.clear();
@@ -398,7 +398,7 @@ onBeforeMount(() => {
         height="15"
         style="margin-right: 4px"
       />
-      清空缓存并返回登录页
+      重置配置并返回登录页
     </el-button>
   </panel>
 </template>

@@ -53,6 +53,8 @@ export function useNav() {
     else document.title = meta.title;
   }
 
+  function updateUserPass() {}
+
   /** 退出登录 */
   function logout() {
     useUserStoreHook().logOut();
@@ -125,6 +127,7 @@ export function useNav() {
     title,
     device,
     layout,
+    updateUserPass,
     logout,
     routers,
     $storage,
