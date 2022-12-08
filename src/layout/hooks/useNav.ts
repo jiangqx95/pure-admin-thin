@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed, reactive } from "vue";
 import { storeToRefs } from "pinia";
 import { getConfig } from "@/config";
 import { emitter } from "@/utils/mitt";
@@ -9,6 +9,7 @@ import { router, remainingPaths } from "@/router";
 import { useAppStoreHook } from "@/store/modules/app";
 import { useUserStoreHook } from "@/store/modules/user";
 import { usePermissionStoreHook } from "@/store/modules/permission";
+import { FormRules } from "element-plus";
 
 const errorInfo = "当前路由配置不正确，请检查配置";
 
@@ -44,6 +45,29 @@ export function useNav() {
 
   const title = computed(() => {
     return $config.Title;
+  });
+
+  const formData = reactive({
+    oldPass: "",
+    newPass: "",
+    repeatPass: ""
+  });
+
+  const formRules = reactive(<FormRules>{
+    repeatPass: [
+      {
+        validator: (rule, value, callback) => {
+          if (value != formData.newPass) {
+            callback(new Error("两次密码不一致"));
+          } else if (value == formData.oldPass) {
+            callback(new Error("新密码不能与旧密码相同"));
+          } else {
+            callback();
+          }
+        },
+        trigger: "blur"
+      }
+    ]
   });
 
   /** 动态title */
@@ -125,6 +149,8 @@ export function useNav() {
   return {
     route,
     title,
+    formData,
+    formRules,
     device,
     layout,
     updateUserPass,

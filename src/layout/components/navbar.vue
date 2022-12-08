@@ -6,7 +6,12 @@ import { useNav } from "@/layout/hooks/useNav";
 import Breadcrumb from "./sidebar/breadCrumb.vue";
 import topCollapse from "./sidebar/topCollapse.vue";
 import Setting from "@iconify-icons/ri/settings-3-line";
-import { reactive, ref } from "vue";
+import { ref } from "vue";
+import { FormInstance } from "element-plus";
+import { message } from "@/utils/message";
+import { updatePass } from "@/api/core/login";
+import { rsaEncrypt } from "@/utils/encrypt/rsaEncrypt";
+import { useUserStoreHook } from "@/store/modules/user";
 
 const {
   layout,
@@ -16,15 +21,46 @@ const {
   pureApp,
   username,
   avatarsStyle,
-  toggleSideBar
+  toggleSideBar,
+  formData,
+  formRules
 } = useNav();
 
+const loading = ref(false);
 const dialogFormVisible = ref(false);
-const form = reactive({
-  password: "",
-  newPassword: "",
-  repeatPassword: ""
-});
+const formRef = ref<FormInstance>();
+
+// 清空表单
+const resetForm = async (formEl: FormInstance | undefined) => {
+  dialogFormVisible.value = false;
+  loading.value = false;
+  if (!formEl) return;
+  formEl.resetFields();
+};
+
+// 修改密码
+const modifyPwd = async (formEl: FormInstance | undefined) => {
+  loading.value = true;
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      updatePass({
+        oldPass: rsaEncrypt(formData.oldPass),
+        newPass: rsaEncrypt(formData.newPass)
+      })
+        .then(() => {
+          message("修改密码成功，请用新密码重新登录!", { type: "success" });
+          useUserStoreHook().logOut();
+        })
+        .catch(() => {
+          loading.value = false;
+        });
+    } else {
+      loading.value = false;
+      return fields;
+    }
+  });
+};
 </script>
 
 <template>
@@ -62,8 +98,8 @@ const form = reactive({
         <template #dropdown>
           <el-dropdown-menu class="logout">
             <el-dropdown-item @click="dialogFormVisible = true"
-              >修改密码</el-dropdown-item
-            >
+              >修改密码
+            </el-dropdown-item>
             <hr style="color: #e0ebf6" />
             <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
@@ -79,24 +115,67 @@ const form = reactive({
     </div>
 
     <!-- 修改密码弹窗 -->
-    <el-dialog title="修改密码" width="500" v-model="dialogFormVisible">
-      <el-form :model="form" label-width="auto">
-        <el-form-item label="旧密码" prop="password">
-          <el-input v-model="form.password" clearable />
+    <el-dialog
+      title="修改密码"
+      width="30%"
+      v-model="dialogFormVisible"
+      @closed="resetForm(formRef)"
+    >
+      <el-form
+        ref="formRef"
+        :rules="formRules"
+        :model="formData"
+        label-width="auto"
+      >
+        <el-form-item
+          label="旧密码"
+          prop="oldPass"
+          :rules="[
+            {
+              required: true,
+              message: '请输入旧密码',
+              trigger: 'blur'
+            }
+          ]"
+        >
+          <el-input v-model="formData.oldPass" clearable />
         </el-form-item>
-        <el-form-item label="新密码" prop="newPassword">
-          <el-input v-model="form.newPassword" clearable show-password />
+        <el-form-item
+          label="新密码"
+          prop="newPass"
+          :rules="[
+            {
+              required: true,
+              message: '请输入新密码',
+              trigger: 'blur'
+            }
+          ]"
+        >
+          <el-input v-model="formData.newPass" clearable show-password />
         </el-form-item>
-        <el-form-item label="确认密码" prop="repeatPassword">
-          <el-input v-model="form.repeatPassword" clearable show-password />
+        <el-form-item
+          label="确认密码"
+          prop="repeatPass"
+          :rules="[
+            {
+              required: true,
+              message: '请再次输入',
+              trigger: 'blur'
+            }
+          ]"
+        >
+          <el-input v-model="formData.repeatPass" clearable show-password />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false"
-            >确 定</el-button
-          >
+          <el-button @click="resetForm(formRef)">取 消</el-button>
+          <el-button
+            type="primary"
+            :loading="loading"
+            @click="modifyPwd(formRef)"
+            >确 定
+          </el-button>
         </div>
       </template>
     </el-dialog>

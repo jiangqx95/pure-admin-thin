@@ -52,3 +52,12 @@ export const getLogin = (data?: object) => {
 export const doLogOut = () => {
   return http.request("delete", baseApi("auth/logout"));
 };
+
+/** 修改密码 */
+export const updatePass = (data?: object) => {
+  return http.request<BaseApiResult<any>>(
+    "post",
+    baseApi("api/users/updatePass"),
+    { data }
+  );
+};
