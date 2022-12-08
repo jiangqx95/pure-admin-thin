@@ -22,7 +22,7 @@ import { bg, avatar, illustration } from "./utils/static";
 import { operates, thirdParty } from "./utils/enums";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
-import { getCode } from "@/api/system/login";
+import { getCode } from "@/api/core/login";
 import dayIcon from "@/assets/svg/day.svg";
 import darkIcon from "@/assets/svg/dark.svg";
 import Lock from "@iconify-icons/ri/lock-fill";

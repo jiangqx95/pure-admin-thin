@@ -4,8 +4,7 @@ import { userType } from "./types";
 import { routerArrays } from "@/layout/types";
 import { router, resetRouter } from "@/router";
 import { storageSession } from "@pureadmin/utils";
-import { doLogOut, getLogin } from "@/api/system/login";
-import { UserResult } from "@/api/system/login";
+import { doLogOut, getLogin, User } from "@/api/core/login";
 import { useMultiTagsStoreHook } from "@/store/modules/multiTags";
 import { type DataInfo, setToken, removeToken, sessionKey } from "@/utils/auth";
 
@@ -34,7 +33,7 @@ export const useUserStore = defineStore({
     },
     /** 登入 */
     async loginByUsername(data) {
-      return new Promise<UserResult>((resolve, reject) => {
+      return new Promise<BaseApiResult<User>>((resolve, reject) => {
         getLogin(data)
           .then(data => {
             if (data) {

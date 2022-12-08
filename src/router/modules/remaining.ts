@@ -4,7 +4,7 @@ export default [
   {
     path: "/login",
     name: "Login",
-    component: () => import("@/views/system/login/index.vue"),
+    component: () => import("@/views/core/login/index.vue"),
     meta: {
       title: "登录",
       showLink: false,

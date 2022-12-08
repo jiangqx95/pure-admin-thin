@@ -47,6 +47,22 @@ type IntervalHandle = ReturnType<typeof setInterval>;
 
 type Effect = "light" | "dark";
 
+/** 通用响应 */
+type BaseApiResult<T> = {
+  code: number;
+  message: string;
+  success: boolean;
+  data: T;
+};
+
+/** 通用分页 */
+type Page = {
+  /** 列表数据 */
+  list: Array<any>;
+  /** 总数 */
+  total?: number;
+};
+
 interface ChangeEvent extends Event {
   target: HTMLInputElement;
 }

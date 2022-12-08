@@ -13,6 +13,15 @@ import { stringify } from "qs";
 import NProgress from "../progress";
 import { getToken, formatToken } from "@/utils/auth";
 import { message } from "@/utils/message";
+import { useUserStoreHook } from "@/store/modules/user";
+import { baseApi } from "@/api/utils";
+
+type Error = {
+  error: string;
+  status: number;
+  message: string;
+  timestamp: Date;
+};
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -47,28 +56,23 @@ class PureHttp {
       async (config: PureHttpRequestConfig) => {
         // 开启进度条动画
         NProgress.start();
-
         // 优先判断post/get等方法是否传入回掉，否则执行初始化设置等回掉
         if (typeof config.beforeRequestCallback === "function") {
           config.beforeRequestCallback(config);
           return config;
         }
-
         if (PureHttp.initConfig.beforeRequestCallback) {
           PureHttp.initConfig.beforeRequestCallback(config);
           return config;
         }
-
         /** 请求白名单，放置一些【登录前】不需要token的接口，
          *  【登录后】不需要token的接口可加也可不加
          *  若不加，当token过期时这些无需token的接口也将无法访问
          */
         const whiteList = ["/auth/login", "/auth/code", "/auth/logout"];
-
         if (!whiteList.some(v => config.url.indexOf(v) > -1)) {
           config.headers["Authorization"] = formatToken(getToken());
         }
-
         return config;
       },
       error => {
@@ -101,8 +105,22 @@ class PureHttp {
         $error.isCancelRequest = Axios.isCancel($error);
         // 关闭进度条动画
         NProgress.done();
-        // @ts-ignore
-        message($error.response.data.message || "服务异常", { type: "error" });
+        const data = <Error>$error.response.data;
+        const url = $error.response.config.url;
+        if (
+          // 是否请求的本应用的后端
+          url === baseApi(url.substring(url.indexOf("/", 1) + 1)) &&
+          data.error === "Unauthorized" &&
+          data.status == 401
+        ) {
+          // 判断token,防止重复弹窗
+          if (getToken() != undefined) {
+            message("登录过期，请重新登录!", { type: "error" });
+            useUserStoreHook().logOut();
+          }
+        } else {
+          message(data.message || "服务异常", { type: "error" });
+        }
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
       }

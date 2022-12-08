@@ -14,7 +14,7 @@ export default {
     {
       path: "/welcome",
       name: "Welcome",
-      component: () => import("@/views/system/welcome/index.vue"),
+      component: () => import("@/views/core/welcome/index.vue"),
       meta: {
         title: "首页"
       }
