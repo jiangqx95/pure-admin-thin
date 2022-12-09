@@ -31,7 +31,7 @@ export function setToken(data: DataInfo) {
   function setSessionKey(username: string, roles: Array<string>) {
     useUserStoreHook().SET_USERNAME(username);
     useUserStoreHook().SET_ROLES(roles);
-    storageSession.setItem(sessionKey, {
+    storageSession().setItem(sessionKey, {
       username,
       roles
     });
@@ -42,8 +42,8 @@ export function setToken(data: DataInfo) {
     setSessionKey(username, roles);
   } else {
     const username =
-      storageSession.getItem<DataInfo>(sessionKey)?.username ?? "";
-    const roles = storageSession.getItem<DataInfo>(sessionKey)?.roles ?? [];
+      storageSession().getItem<DataInfo>(sessionKey)?.username ?? "";
+    const roles = storageSession().getItem<DataInfo>(sessionKey)?.roles ?? [];
     setSessionKey(username, roles);
   }
 }
