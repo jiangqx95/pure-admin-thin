@@ -132,8 +132,8 @@ const multiTagsCacheChange = () => {
 /** 重置配置并返回登录页 */
 function onReset() {
   removeToken();
-  storageLocal.clear();
-  storageSession.clear();
+  storageLocal().clear();
+  storageSession().clear();
   const { Grey, Weak, MultiTagsCache, EpThemeColor, Layout } = getConfig();
   useAppStoreHook().setLayout(Layout);
   setEpThemeColor(EpThemeColor);
