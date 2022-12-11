@@ -13,7 +13,6 @@ const { layout, device, pureApp, toggleSideBar } = useNav();
     class="navbar bg-[#fff] shadow-sm shadow-[rgba(0, 21, 41, 0.08)] dark:shadow-[#0d0d0d]"
   >
     <topCollapse
-      v-if="device === 'mobile'"
       class="hamburger-container"
       :is-active="pureApp.sidebar.opened"
       @toggleClick="toggleSideBar"
@@ -42,7 +41,6 @@ const { layout, device, pureApp, toggleSideBar } = useNav();
 
   .breadcrumb-container {
     float: left;
-    margin-left: 16px;
   }
 }
 </style>
