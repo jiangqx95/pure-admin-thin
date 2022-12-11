@@ -12,6 +12,7 @@ import { message } from "@/utils/message";
 import { updatePass } from "@/api/core/login";
 import { rsaEncrypt } from "@/utils/encrypt/rsaEncrypt";
 import { useUserStoreHook } from "@/store/modules/user";
+import avatar from "@/assets/svg/avatar.svg";
 import Cookies from "js-cookie";
 
 const {
@@ -94,18 +95,22 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
       <!-- 修改密码|退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">
-          <img src="../../assets/svg/avatar.svg" :style="avatarsStyle" />
+          <avatar :style="avatarsStyle" />
           <p v-if="username" class="dark:text-white">{{ username }}</p>
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
             <el-dropdown-item @click="dialogFormVisible = true">
-              <el-icon><Edit /></el-icon>
+              <el-icon>
+                <Edit />
+              </el-icon>
               修改密码
             </el-dropdown-item>
             <hr style="color: #e0ebf6" />
             <el-dropdown-item @click="logout">
-              <el-icon><SwitchButton /></el-icon>
+              <el-icon>
+                <SwitchButton />
+              </el-icon>
               退出登录
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -223,7 +228,7 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
         font-size: 14px;
       }
 
-      img {
+      svg {
         width: 22px;
         height: 22px;
         border-radius: 50%;
