@@ -232,13 +232,14 @@ onBeforeMount(() => {
 
 <template>
   <panel>
-    <el-divider>主题</el-divider>
+    <el-divider style="margin-top: 2em">主题</el-divider>
     <el-switch
       v-model="dataTheme"
       inline-prompt
       class="pure-datatheme"
       :active-icon="dayIcon"
       :inactive-icon="darkIcon"
+      size="large"
       @change="dataThemeChange"
     />
 

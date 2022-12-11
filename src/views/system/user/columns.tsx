@@ -123,8 +123,9 @@ export function useColumns() {
           });
         }, 300);
       })
-      .catch(() => {
+      .catch(error => {
         row.enabled = !row.enabled;
+        message(error.response.data.message || "请求失败", { type: "error" });
       });
   }
 

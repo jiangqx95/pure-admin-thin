@@ -33,8 +33,13 @@ import qrCode from "./components/qrCode.vue";
 import regist from "./components/regist.vue";
 import update from "./components/update.vue";
 
-const GLOB_APP_SHORT_NAME = "pure-admin-";
-const rememberMe = ref(false);
+// 记住密码吗
+const rememberPwd = reactive({
+  checked: false,
+  username: "",
+  password: ""
+});
+
 const currentPage = computed(() => {
   return useUserStoreHook().currentPage;
 });
@@ -46,20 +51,27 @@ const captcha = reactive({
   uuid: ""
 });
 
+// 表单数据
 const ruleForm = reactive({
-  username: "admin",
-  password: "123456",
-  code: ""
+  username: "", //用户名
+  password: "", //密码
+  code: "" //验证码
 });
 
-// 获取cookie
-const rememberMe_ = Cookies.get(GLOB_APP_SHORT_NAME + "rememberMe");
-rememberMe.value = rememberMe_ === undefined ? false : Boolean(rememberMe_);
-if (rememberMe.value) {
-  const username = Cookies.get(GLOB_APP_SHORT_NAME + "username");
-  ruleForm.username = username === undefined ? ruleForm.username : username;
-  const password = Cookies.get(GLOB_APP_SHORT_NAME + "password");
-  ruleForm.password = password === undefined ? ruleForm.password : password;
+// 获取cookie中记住的密码
+const rememberPwd_cookies = Cookies.get("rememberPwd")
+  ? JSON.parse(Cookies.get("rememberPwd"))
+  : {
+      checked: "false",
+      username: "",
+      password: ""
+    };
+
+// 回显
+if (rememberPwd_cookies.checked === "true") {
+  rememberPwd.checked = true;
+  ruleForm.username = rememberPwd_cookies.username;
+  ruleForm.password = rememberPwd_cookies.password;
 }
 
 // 获取验证码
@@ -86,9 +98,15 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       const encrypt_pass =
-        ruleForm.password !== Cookies.get("pure-admin-" + "password")
+        ruleForm.password !== rememberPwd_cookies.password
           ? rsaEncrypt(ruleForm.password)
           : ruleForm.password;
+
+      // 加密失败
+      if (!encrypt_pass) {
+        message("密码错误", { type: "error" });
+        return false;
+      }
 
       useUserStoreHook()
         .loginByUsername({
@@ -99,16 +117,32 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         })
         .then(res => {
           if (res) {
-            // 获取后端路由
+            // 记住密码,有效期一天
+            if (rememberPwd.checked) {
+              Cookies.set(
+                "rememberPwd",
+                JSON.stringify({
+                  checked: "true",
+                  username: ruleForm.username,
+                  password: encrypt_pass
+                }),
+                { expires: 1 }
+              );
+            } else {
+              Cookies.remove("rememberPwd");
+            }
+            // 获取后端路由，并跳转至首页
             initRouter().then(() => {
               router.push("/");
               message("登录成功", { type: "success" });
             });
           }
         })
-        .catch(() => {
-          loading.value = false;
+        .catch(error => {
+          // 刷新验证码
           getVerificationCode();
+          loading.value = false;
+          message(error.response.data.message, { type: "error" });
         });
     } else {
       loading.value = false;
@@ -247,7 +281,9 @@ onBeforeUnmount(() => {
             <Motion :delay="250">
               <el-form-item>
                 <div class="w-full h-[20px] flex justify-between items-center">
-                  <el-checkbox v-model="rememberMe">记住密码</el-checkbox>
+                  <el-checkbox v-model="rememberPwd.checked"
+                    >记住密码</el-checkbox
+                  >
                   <el-button
                     link
                     type="primary"

@@ -376,7 +376,7 @@
       // }
       .el-menu-tooltip__trigger {
         width: 54px;
-        padding: 18px !important;
+        //padding: 18px !important;
       }
     }
   }
@@ -557,9 +557,9 @@ body[layout="vertical"] {
         background: transparent !important;
       }
 
-      .el-sub-menu__title {
-        padding: 0 18px !important;
-      }
+      //.el-sub-menu__title {
+      //  padding: 0 18px !important;
+      //}
     }
 
     .sub-menu-icon {

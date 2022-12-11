@@ -10,7 +10,7 @@ import { useAppStoreHook } from "@/store/modules/app";
 import { useUserStoreHook } from "@/store/modules/user";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import { FormRules } from "element-plus";
-
+import { REGEXP_PWD } from "@/utils/regexp";
 const errorInfo = "当前路由配置不正确，请检查配置";
 
 export function useNav() {
@@ -47,20 +47,35 @@ export function useNav() {
     return $config.Title;
   });
 
+  // 修改密码表单
   const formData = reactive({
     oldPass: "",
     newPass: "",
     repeatPass: ""
   });
 
+  // 表单校验规则
   const formRules = reactive(<FormRules>{
+    newPass: [
+      {
+        validator: (rule, value, callback) => {
+          if (value === formData.oldPass) {
+            callback(new Error("新密码不能与旧密码相同"));
+          }
+          if (!REGEXP_PWD.test(value)) {
+            callback(new Error("格式8-18位数字、字母、符号的任意两种组合"));
+          } else {
+            callback();
+          }
+        },
+        trigger: "blur"
+      }
+    ],
     repeatPass: [
       {
         validator: (rule, value, callback) => {
           if (value != formData.newPass) {
             callback(new Error("两次密码不一致"));
-          } else if (value == formData.oldPass) {
-            callback(new Error("新密码不能与旧密码相同"));
           } else {
             callback();
           }

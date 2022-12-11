@@ -12,6 +12,7 @@ import { message } from "@/utils/message";
 import { updatePass } from "@/api/core/login";
 import { rsaEncrypt } from "@/utils/encrypt/rsaEncrypt";
 import { useUserStoreHook } from "@/store/modules/user";
+import Cookies from "js-cookie";
 
 const {
   layout,
@@ -50,10 +51,14 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
       })
         .then(() => {
           message("修改密码成功，请用新密码重新登录!", { type: "success" });
+          // 删除记住密码信息
+          Cookies.remove("rememberPwd");
+          // 退出并跳转到登陆页
           useUserStoreHook().logOut();
         })
-        .catch(() => {
+        .catch(error => {
           loading.value = false;
+          message(error.response.data.message || "请求失败", { type: "error" });
         });
     } else {
       loading.value = false;
@@ -89,19 +94,20 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
       <!-- 修改密码|退出登录 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link navbar-bg-hover select-none">
-          <img
-            src="https://avatars.githubusercontent.com/u/44761321?v=4"
-            :style="avatarsStyle"
-          />
+          <img src="../../assets/svg/avatar.svg" :style="avatarsStyle" />
           <p v-if="username" class="dark:text-white">{{ username }}</p>
         </span>
         <template #dropdown>
           <el-dropdown-menu class="logout">
-            <el-dropdown-item @click="dialogFormVisible = true"
-              >修改密码
+            <el-dropdown-item @click="dialogFormVisible = true">
+              <el-icon><Edit /></el-icon>
+              修改密码
             </el-dropdown-item>
             <hr style="color: #e0ebf6" />
-            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
+            <el-dropdown-item @click="logout">
+              <el-icon><SwitchButton /></el-icon>
+              退出登录
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -169,11 +175,12 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="resetForm(formRef)">取 消</el-button>
+          <el-button @click="resetForm(formRef)" icon="close">取 消</el-button>
           <el-button
             type="primary"
             :loading="loading"
             @click="modifyPwd(formRef)"
+            icon="check"
             >确 定
           </el-button>
         </div>

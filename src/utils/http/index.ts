@@ -118,8 +118,6 @@ class PureHttp {
             message("登录过期，请重新登录!", { type: "error" });
             useUserStoreHook().logOut();
           }
-        } else {
-          message(data.message || "服务异常", { type: "error" });
         }
         // 所有的响应异常 区分来源为取消请求/非取消请求
         return Promise.reject($error);
