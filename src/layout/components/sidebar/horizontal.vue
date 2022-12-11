@@ -7,7 +7,7 @@ import UserBar from "../userBar.vue";
 
 const menuRef = ref();
 
-const { layout, route, title, routers, backHome, menuSelect } = useNav();
+const { route, title, routers, backHome, menuSelect } = useNav();
 
 nextTick(() => {
   menuRef.value?.handleResize();
@@ -45,7 +45,7 @@ watch(
         :base-path="route.path"
       />
     </el-menu>
-    <UserBar :layout="layout" />
+    <UserBar />
   </div>
 </template>
 

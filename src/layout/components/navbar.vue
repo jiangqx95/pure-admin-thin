@@ -23,7 +23,7 @@ const { layout, device, pureApp, toggleSideBar } = useNav();
       class="breadcrumb-container"
     />
     <mixNav v-if="layout === 'mix'" />
-    <UserBar v-if="layout === 'vertical'" :layout="layout" />
+    <UserBar v-if="layout === 'vertical'" />
   </div>
 </template>
 

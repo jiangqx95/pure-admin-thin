@@ -9,7 +9,7 @@ import UserBar from "../userBar.vue";
 const menuRef = ref();
 const defaultActive = ref(null);
 
-const { layout, route, device, routers, menuSelect, resolvePath } = useNav();
+const { route, device, routers, menuSelect, resolvePath } = useNav();
 
 function getDefaultActive(routePath) {
   const wholeMenus = usePermissionStoreHook().wholeMenus;
@@ -77,7 +77,7 @@ watch(
         </template>
       </el-menu-item>
     </el-menu>
-    <UserBar :layout="layout" />
+    <UserBar />
   </div>
 </template>
 

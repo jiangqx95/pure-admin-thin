@@ -12,12 +12,16 @@ import { message } from "@/utils/message";
 import Cookies from "js-cookie";
 import { useUserStoreHook } from "@/store/modules/user";
 
-const { logout, onPanel, username, avatarsStyle, formData, formRules } =
-  useNav();
-
-const Props = defineProps<{
-  layout: String;
-}>();
+const {
+  layout,
+  device,
+  username,
+  avatarsStyle,
+  formData,
+  formRules,
+  logout,
+  onPanel
+} = useNav();
 
 const loading = ref(false);
 const dialogFormVisible = ref(false);
@@ -63,7 +67,7 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
 <template>
   <div
     :class="
-      Props.layout === 'vertical'
+      layout === 'vertical'
         ? 'vertical-header-right'
         : 'horizontal-header-right'
     "
@@ -108,7 +112,7 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
   <!-- 修改密码弹窗 -->
   <el-dialog
     title="修改密码"
-    width="30%"
+    :width="device !== 'mobile' ? '30%' : '95%'"
     v-model="dialogFormVisible"
     @closed="resetForm(formRef)"
   >
