@@ -1,10 +1,10 @@
 import {
-  createWebHashHistory,
-  createWebHistory,
-  RouteComponent,
-  RouteRecordNormalized,
+  RouterHistory,
   RouteRecordRaw,
-  RouterHistory
+  RouteComponent,
+  createWebHistory,
+  createWebHashHistory,
+  RouteRecordNormalized
 } from "vue-router";
 import { router } from "./index";
 import { isProxy, toRaw } from "vue";
@@ -12,28 +12,31 @@ import { loadEnv } from "../../build";
 import { useTimeoutFn } from "@vueuse/core";
 import { RouteConfigs } from "@/layout/types";
 import {
-  isAllEmpty,
-  isIncludeAllChildren,
   isString,
-  storageSession
+  cloneDeep,
+  isAllEmpty,
+  intersection,
+  storageSession,
+  isIncludeAllChildren
 } from "@pureadmin/utils";
 import { getConfig } from "@/config";
 import { buildHierarchyTree } from "@/utils/tree";
-import { cloneDeep, intersection } from "lodash-unified";
-import { type DataInfo, sessionKey } from "@/utils/auth";
+import { sessionKey, type DataInfo } from "@/utils/auth";
 import { usePermissionStoreHook } from "@/store/modules/permission";
-// 动态路由
-import { getAsyncRoutes } from "@/api/core/routes";
-
 const IFrame = () => import("@/layout/frameView.vue");
 // https://cn.vitejs.dev/guide/features.html#glob-import
 const modulesRoutes = import.meta.glob("/src/views/**/*.{vue,tsx}");
+
+// 动态路由
+import { getAsyncRoutes } from "@/api/routes";
 
 function handRank(routeInfo: any) {
   const { name, path, parentId, meta } = routeInfo;
   return isAllEmpty(parentId)
     ? isAllEmpty(meta?.rank) ||
-        (meta?.rank === 0 && name !== "Home" && path !== "/")
+      (meta?.rank === 0 && name !== "Home" && path !== "/")
+      ? true
+      : false
     : false;
 }
 
@@ -74,6 +77,8 @@ function filterChildrenTree(data: RouteComponent[]) {
 function isOneOfArray(a: Array<string>, b: Array<string>) {
   return Array.isArray(a) && Array.isArray(b)
     ? intersection(a, b).length > 0
+      ? true
+      : false
     : true;
 }
 
@@ -352,9 +357,10 @@ function hasAuth(value: string | Array<string>): boolean {
   /** 从当前路由的`meta`字段里获取按钮级别的所有自定义`code`值 */
   const metaAuths = getAuths();
   if (!metaAuths) return false;
-  return isString(value)
+  const isAuths = isString(value)
     ? metaAuths.includes(value)
     : isIncludeAllChildren(value, metaAuths);
+  return isAuths ? true : false;
 }
 
 export {
