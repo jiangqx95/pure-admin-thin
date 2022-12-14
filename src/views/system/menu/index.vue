@@ -5,5 +5,5 @@ defineOptions({
 </script>
 
 <template>
-  <h1>menu</h1>
+  <p>asas</p>
 </template>

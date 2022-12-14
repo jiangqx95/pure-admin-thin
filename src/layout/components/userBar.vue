@@ -123,7 +123,7 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
       label-width="auto"
     >
       <el-form-item
-        label="旧密码"
+        label="当前密码"
         prop="oldPass"
         :rules="[
           {
@@ -133,7 +133,7 @@ const modifyPwd = async (formEl: FormInstance | undefined) => {
           }
         ]"
       >
-        <el-input v-model="formData.oldPass" clearable />
+        <el-input v-model="formData.oldPass" clearable show-password />
       </el-form-item>
       <el-form-item
         label="新密码"

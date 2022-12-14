@@ -12,3 +12,7 @@ import Lollipop from "@iconify-icons/ep/lollipop";
 addIcon("homeFilled", HomeFilled);
 addIcon("informationLine", InformationLine);
 addIcon("lollipop", Lollipop);
+
+// 非菜单图标
+import RefreshRight from "@iconify-icons/ep/refresh-right";
+addIcon("refreshRight", RefreshRight);
