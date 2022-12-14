@@ -46,7 +46,7 @@ const tableRef = ref();
  * 初始化
  */
 onMounted(() => {
-  onSearch();
+  onSearch({ pid: 0 });
 });
 
 function handleUpdate(row) {
@@ -105,10 +105,10 @@ const load = async (
       :model="form"
       class="bg-bg_color w-[99/100] pl-8 pt-4"
     >
-      <el-form-item label="部门名称：" prop="user">
+      <el-form-item label="部门名称：" prop="name">
         <el-input v-model="form.name" placeholder="请输入部门名称" clearable />
       </el-form-item>
-      <el-form-item label="状态：" prop="status">
+      <el-form-item label="状态：" prop="enabled">
         <el-select v-model="form.enabled" placeholder="请选择状态" clearable>
           <el-option label="开启" value="true" />
           <el-option label="关闭" value="false" />

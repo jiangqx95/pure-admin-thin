@@ -90,21 +90,21 @@ onMounted(() => {
         :model="form"
         class="bg-bg_color w-[99/100] pl-8 pt-4"
       >
-        <el-form-item label="用户名称：" prop="username">
+        <el-form-item label="用户名称：" prop="blurry">
           <el-input
             v-model="form.blurry"
             placeholder="请输入用户名 / 昵称"
             clearable
           />
         </el-form-item>
-        <el-form-item label="手机号码：" prop="mobile">
+        <el-form-item label="手机号码：" prop="phone">
           <el-input
             v-model="form.phone"
             placeholder="请输入手机号码"
             clearable
           />
         </el-form-item>
-        <el-form-item label="状态：" prop="status">
+        <el-form-item label="状态：" prop="enabled">
           <el-select v-model="form.enabled" placeholder="请选择" clearable>
             <el-option label="启用" value="true" />
             <el-option label="停用" value="false" />

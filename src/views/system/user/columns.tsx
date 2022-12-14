@@ -62,8 +62,8 @@ export function useColumns() {
           size={scope.props.size === "small" ? "small" : "default"}
           loading={switchLoadMap.value[scope.index]?.loading}
           v-model={scope.row.enabled}
-          active-value={false}
-          inactive-value={true}
+          active-value={true}
+          inactive-value={false}
           active-text="启用"
           inactive-text="停用"
           inline-prompt
@@ -89,7 +89,7 @@ export function useColumns() {
   function onChange({ row, index }) {
     ElMessageBox.confirm(
       `确认要<strong>${
-        row.enabled ? "停用" : "启用"
+        row.enabled ? "启用" : "停用"
       }</strong><strong style='color:var(--el-color-primary)'>${
         row.username
       }</strong>用户吗?`,
