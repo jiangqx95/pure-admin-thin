@@ -61,9 +61,7 @@ async function onSearch() {
   const { data } = await getRoleList({ ...form, ...pagination });
   dataList.value = data.list;
   pagination.total = data.total;
-  setTimeout(() => {
-    loading.value = false;
-  }, 500);
+  loading.value = false;
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

@@ -21,3 +21,10 @@ export const getDeptList = (params?: object) => {
     params
   });
 };
+
+/** 获取部门管理列表 */
+export const getMenuList = (params?: object) => {
+  return http.request<BaseApiResult<Page>>("get", baseApi("api/menus"), {
+    params
+  });
+};
